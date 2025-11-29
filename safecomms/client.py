@@ -2,7 +2,7 @@ import requests
 from typing import Optional, Dict, Any
 
 class SafeCommsClient:
-    def __init__(self, api_key: str, base_url: str = "https://safecomms.dev/api/v1/public"):
+    def __init__(self, api_key: str, base_url: str = "https://api.safecomms.dev"):
         self.api_key = api_key
         self.base_url = base_url.rstrip('/')
         self.session = requests.Session()
