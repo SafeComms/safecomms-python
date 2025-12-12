@@ -1,4 +1,5 @@
 import requests
+import os
 from typing import Optional, Dict, Any
 
 class SafeCommsClient:
@@ -26,6 +27,36 @@ class SafeCommsClient:
         response = self.session.post(f"{self.base_url}/moderation/text", json=payload)
         response.raise_for_status()
         return response.json()
+
+    def moderate_image(self, image: str, language: str = "en", moderation_profile_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Moderate image content.
+        """
+        payload = {
+            "image": image,
+            "language": language,
+            "moderationProfileId": moderation_profile_id
+        }
+        response = self.session.post(f"{self.base_url}/moderation/image", json=payload)
+        response.raise_for_status()
+        return response.json()
+
+    def moderate_image_file(self, file_path: str, language: str = "en", moderation_profile_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Moderate image file.
+        """
+        with open(file_path, 'rb') as f:
+            files = {'image': (os.path.basename(file_path), f)}
+            data = {'language': language}
+            if moderation_profile_id:
+                data['moderationProfileId'] = moderation_profile_id
+            
+            # Unset Content-Type so requests can set it to multipart/form-data
+            headers = {"Content-Type": None}
+            
+            response = self.session.post(f"{self.base_url}/moderation/image/upload", files=files, data=data, headers=headers)
+            response.raise_for_status()
+            return response.json()
 
     def get_usage(self) -> Dict[str, Any]:
         """
