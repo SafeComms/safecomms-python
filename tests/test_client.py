@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 def test_client_init():
     client = SafeCommsClient("test-key")
     assert client.api_key == "test-key"
-    assert client.base_url == "https://safecomms.dev/api/v1/public"
+    assert client.base_url == "https://api.safecomms.dev"
 
 @patch('requests.Session.post')
 def test_moderate_text(mock_post):
