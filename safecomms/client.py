@@ -28,26 +28,34 @@ class SafeCommsClient:
         response.raise_for_status()
         return response.json()
 
-    def moderate_image(self, image: str, language: str = "en", moderation_profile_id: Optional[str] = None) -> Dict[str, Any]:
+    def moderate_image(self, image: str, language: str = "en", moderation_profile_id: Optional[str] = None, enable_ocr: bool = False, enhanced_ocr: bool = False, extract_metadata: bool = False) -> Dict[str, Any]:
         """
         Moderate image content.
         """
         payload = {
             "image": image,
             "language": language,
-            "moderationProfileId": moderation_profile_id
+            "moderationProfileId": moderation_profile_id,
+            "enableOcr": enable_ocr,
+            "enhancedOcr": enhanced_ocr,
+            "extractMetadata": extract_metadata
         }
         response = self.session.post(f"{self.base_url}/moderation/image", json=payload)
         response.raise_for_status()
         return response.json()
 
-    def moderate_image_file(self, file_path: str, language: str = "en", moderation_profile_id: Optional[str] = None) -> Dict[str, Any]:
+    def moderate_image_file(self, file_path: str, language: str = "en", moderation_profile_id: Optional[str] = None, enable_ocr: bool = False, enhanced_ocr: bool = False, extract_metadata: bool = False) -> Dict[str, Any]:
         """
         Moderate image file.
         """
         with open(file_path, 'rb') as f:
             files = {'image': (os.path.basename(file_path), f)}
-            data = {'language': language}
+            data = {
+                'language': language,
+                'enableOcr': str(enable_ocr).lower(),
+                'enhancedOcr': str(enhanced_ocr).lower(),
+                'extractMetadata': str(extract_metadata).lower()
+            }
             if moderation_profile_id:
                 data['moderationProfileId'] = moderation_profile_id
             
